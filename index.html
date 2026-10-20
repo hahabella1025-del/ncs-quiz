@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NCS 지필고사 연습</title>
+<style>
+:root{--bg:#f3f5fa;--card:#fff;--tx:#18202c;--mut:#5f6b7c;--pri:#2457d6;--pri2:#e7eefc;--onpri:#fff;--ok:#0f7a55;--okbg:#e3f5ec;--bad:#bf2a30;--badbg:#fdeceb;--line:#d6dce8;--warn:#fff3cf}
+@media (prefers-color-scheme:dark){:root{--bg:#10151d;--card:#18202b;--tx:#e8edf5;--mut:#9aa7b8;--pri:#6c9bff;--pri2:#1d2a45;--onpri:#0b1220;--ok:#4cd39b;--okbg:#14352a;--bad:#ff7b80;--badbg:#3a1a1c;--line:#2c3746;--warn:#3b3417}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 -apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:12px 14px 40px}
+h2{font-size:1.25rem;margin:8px 0 10px}h3{font-size:1.05rem;margin:14px 0 8px}
+.top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 14px}
+.top .row{max-width:640px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.brand{font-weight:800}.who{font-size:.9rem;color:var(--mut)}
+.tabs{max-width:640px;margin:6px auto 0;display:flex;gap:6px;overflow-x:auto}
+.tabs button{flex:1;min-height:40px;border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-size:.92rem;white-space:nowrap;padding:0 10px}
+.tabs button.on{background:var(--pri);border-color:var(--pri);color:var(--onpri);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px}
+.btn{min-height:48px;padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:var(--onpri)}
+.btn.block{display:block;width:100%;margin:0 0 10px}.btn.big{min-height:58px;font-size:1.15rem}
+.btn.sm{min-height:38px;padding:4px 12px;font-size:.9rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.inp,select.sel,input[type=number],input[type=text],input[type=password],textarea{width:100%;font:inherit;font-size:16px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--tx)}
+textarea{resize:vertical}
+.msg{margin:8px 0;padding:0;border-radius:10px}
+.msg.err{padding:10px 12px;background:var(--badbg);color:var(--bad);border:1px solid var(--bad)}
+.msg.okm{padding:10px 12px;background:var(--okbg);color:var(--ok);border:1px solid var(--ok)}
+.msg:empty{display:none}
+.note{background:var(--warn);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:.95rem}
+.note.bad{background:var(--badbg);color:var(--bad)}
+.auto{background:var(--pri2);border-radius:10px;padding:8px 12px;margin:6px 0}
+.mut,small{color:var(--mut)}
+.ck{display:flex;gap:10px;align-items:center;min-height:44px}
+.ck input{width:22px;height:22px}
+.nrow{display:flex;gap:8px;align-items:center}.nrow input{width:90px}
+.progress{margin:4px 0 10px}.pt{display:flex;justify-content:space-between}
+.pb{height:8px;background:var(--line);border-radius:6px;overflow:hidden}.pb i{display:block;height:100%;background:var(--pri)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.chip{min-width:38px;height:38px;border-radius:19px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;font-size:.9rem}
+.chip.done{background:var(--pri2);border-color:var(--pri)}.chip.cur{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.qtext{white-space:pre-wrap;font-size:1.05rem;margin:6px 0 16px}.qtext.sm{font-size:1rem;margin:8px 0}
+.choice{display:flex;gap:12px;width:100%;text-align:left;min-height:56px;padding:14px;margin:0 0 14px;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.choice.sel{border-color:var(--pri);background:var(--pri2)}
+.choice .cn{font-weight:800;color:var(--pri)}.choice .ct{white-space:pre-wrap}
+.ox{display:flex;gap:14px;margin-bottom:14px}.ox .choice{justify-content:center;align-items:center;font-size:2rem;font-weight:800;min-height:96px;margin:0}
+.mbox{background:var(--pri2);border-radius:12px;padding:10px 12px;margin-bottom:12px}.mi{padding:3px 0}
+.mrow{display:flex;gap:10px;align-items:center;margin:0 0 12px}.ml{flex:1}.mrow select{width:110px}
+.bar{position:sticky;bottom:0;background:var(--bg);padding:10px 0 calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px}
+.bar .btn{flex:1}
+.rc{border-bottom:1px dashed var(--line);padding:12px 0}
+.rc .rhead{font-size:1.02rem}.io{white-space:pre-wrap;color:var(--mut);font-size:.95rem}
+.src{font-size:.92rem;margin:4px 0}.sum{margin:6px 0}
+.pre{white-space:pre-wrap;margin:6px 0}.aux{background:var(--pri2);border-radius:8px;padding:8px}
+.model{background:var(--okbg);border-radius:10px;padding:10px;margin:8px 0}
+.rub{display:flex;gap:10px;align-items:flex-start;min-height:40px;padding:4px 0}.rub input{width:22px;height:22px;flex:none;margin-top:2px}
+details summary{cursor:pointer;color:var(--pri);font-weight:600;padding:6px 0}
+.opt{padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0;white-space:pre-wrap}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}.opt.mine{border-width:2px}.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.score .big{font-size:2rem;font-weight:800;color:var(--pri)}
+table.tt{width:100%;border-collapse:collapse;margin-top:8px}.tt th,.tt td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}.tt td:nth-child(n+2),.tt th:nth-child(n+2){text-align:right}
+.rv{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.82rem;margin:2px 4px 2px 0;border:1px solid var(--line)}
+.rv.done{background:var(--okbg);color:var(--ok)}.rv.due{background:var(--badbg);color:var(--bad);font-weight:700}
+.chip2{border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:16px;padding:4px 12px;margin:2px;font:inherit}
+.pf{border-top:1px solid var(--line);padding:8px 0;font-size:.95rem}.errs{margin:4px 0;padding-left:18px;color:var(--bad)}
+.snip{font-size:.8rem;color:var(--mut);white-space:pre-wrap;word-break:break-all;margin:2px 0 8px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.ptrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}.ptrow input{width:80px}
+label.fld{display:block;font-weight:600;margin:10px 0 4px}
+.btns{margin-top:14px}
+.tl{text-align:left!important}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+
+/* ================= 상수 ================= */
+const TYPES=['4지택일형','진위형','연결형','단답형','서술형(약술)','서술형(계산)'];
+const TYPE_CODES={MC:TYPES[0],OX:TYPES[1],MT:TYPES[2],SA:TYPES[3],ES:TYPES[4],CA:TYPES[5]};
+const DEFAULT_POINTS={'4지택일형':2,'진위형':2,'연결형':2,'단답형':2,'서술형(약술)':4,'서술형(계산)':4};
+const ROUND_ORDER=['1차','2차','차수 미확인'];
+const ROUND_LABEL={'1차':'1차 (기초)','2차':'2차 (보충)','차수 미확인':'차수 미확인'};
+const DIFF_ORDER=['하','중','상'];
+const CIRC='①②③④';
+const NONE='정보 없음';
+const SAMPLE_NAME='내장샘플_1차.txt';
+
+const SAMPLE=`문서 작성 문제은행 (내장 샘플 - 실제 NCS 학습모듈 내용이 아님)
+차수: 1차 (기초용)
+
+=== Q SAMPLE-MC-001 ===
+모듈: 문서 작성(샘플)
+섹션: 공문서 작성
+쪽: 확인불가
+유형: 4지택일형
+난이도: 하
+핵심개념번호: 1
+문제: 공문서에서 날짜를 쓸 때 '년·월·일' 글자 대신 숫자 뒤에 찍는 부호는 무엇인가?
+보기: ① 쉼표(,) ② 쌍점(:)
+③ 마침표(.) ④ 붙임표(-)
+정답: ③
+허용답안: -
+해설: **날짜는** 숫자로 표기하고 연·월·일 글자를 생략하며 그 자리에 마침표를 찍는다. 예: 2026. 10. 20. [1]
+쉬운풀이: 날짜 숫자 뒤에 점(.)을 찍는다고 기억한다.
+원문근거: "(샘플 문장입니다)"
+키워드: 공문서, 날짜표기
+=== END ===
+
+=== Q SAMPLE-OX-001 ===
+모듈: 문서 작성(샘플)
+섹션: 공문서 작성
+쪽: 확인불가
+유형: 진위형
+난이도: 하
+핵심개념번호: 2
+문제: 공문서는 본문이 끝나면 한 글자 띄우고 '끝.'을 표시한다.
+정답: O
+허용답안: -
+해설: 본문의 마지막에 '끝.'을 표시하여 문서가 끝났음을 나타낸다.
+쉬운풀이: 문서의 마침표 같은 표시이다.
+원문근거: "(샘플 문장입니다)"
+키워드: 공문서, 끝표시
+=== END ===
+
+=== Q SAMPLE-MT-001 ===
+모듈: 문서 작성(샘플)
+섹션: 문서의 종류
+쪽: 확인불가
+유형: 연결형
+난이도: 중
+핵심개념번호: 3
+문제: 다음 문서의 종류와 설명을 알맞게 연결하시오.
+정답: 가-4, 나-1, 다-2, 라-3
+허용답안: -
+연결항목: 왼쪽 1) 공문서 2) 보고서 3) 기획서 4) 회의록, 오른쪽 가) 회의 내용과 결정 사항을 기록한 문서 나) 행정기관이 공적 업무를 위해 작성하는 문서 다) 업무 결과나 조사 내용을 상사에게 알리는 문서 라) 새로운 사업이나 상품을 제안하는 문서
+해설: 문서는 작성 목적에 따라 종류가 나뉜다.
+쉬운풀이: 누가, 무엇을 위해 쓰는지 생각하면 구분된다.
+원문근거: "(샘플 문장입니다)"
+키워드: 문서종류
+=== END ===
+
+=== Q SAMPLE-SA-001 ===
+모듈: 문서 작성(샘플)
+섹션: 문서의 종류
+쪽: 확인불가
+유형: 단답형
+난이도: 중
+핵심개념번호: 4
+문제: 회의의 진행 내용과 결정 사항을 기록한 문서를 무엇이라 하는가?
+정답: 회의록
+허용답안: 의사록, 회의 기록
+해설: 회의록은 회의 내용과 결정 사항을 기록한 문서이다.
+쉬운풀이: 회의를 기록한 문서이다.
+원문근거: "(샘플 문장입니다)"
+키워드: 문서종류, 회의록
+=== END ===
+
+=== Q SAMPLE-ES-001 ===
+모듈: 문서 작성(샘플)
+섹션: 공문서 작성
+쪽: 확인불가
+유형: 서술형(약술)
+난이도: 상
+핵심개념번호: 5
+문제: 공문서를 작성할 때 유의할 점 4가지를 쓰시오.
+정답: 모범답안 참조
+채점요소:
+1) 쉬운 용어를 사용한다
+2) 간결하고 명확하게 쓴다
+3) 날짜는 숫자로 쓰고 마침표를 찍는다
+4) 본문 끝에 '끝.'을 표시한다
+모범답안: 쉬운 용어 사용, 간결·명확한 문장, 날짜는 숫자 표기 후 마침표, 본문 끝 '끝.' 표시.
+해설: 공문서는 누구나 이해할 수 있게 정확하고 간결하게 작성한다.
+쉬운풀이: 쉽게, 짧게, 날짜는 점, 끝에는 '끝.'
+원문근거: "(샘플 문장입니다)"
+키워드: 공문서, 작성요령
+=== END ===
+`;
+
+/* 파서 자가 테스트용 블록 (한 줄 형태 원문) */
+const TEST_BLOCK=`MC 001 === 모듈: 문서 작성 섹션: 1-1. 문서 이해와 일정 관리 쪽: 3 유형: 4지택일형 난이도: 하 핵심개념번호: 1 문제: 다음 중 행정안전부(2012)에서 제시한 문서의 주요 기능에 대한 설명으로 가장 올바르지 않은 것은? 보기: ① 개인의 사적인 감정과 주관적 소회를 기재하여 친목을 도모하는 기능 ② 업무 지시, 연락, 계약 체결, 의견 기록 등을 수행하는 의사 전달 기능 ③ 판정 처리, 계획·실적의 비교·조회, 업무 사항 분류 등의 의사 보존 기능 ④ 참고 자료나 증거 자료로 제공되어 행정 활동을 지원하는 정보 제공 기능 정답: ① 해설: 문서의 주요 기능에는 대화로 불충분한 의사소통을 문자로 구체적으로 기록하는 기능, 업무 지시·연락·계약 체결 등을 위한 의사 전달 기능, 판정 처리·계획 및 실적 비교 조회를 위한 의사 보존 기능, 정보 제공 수단으로 행정 활동을 지원하는 기능, 조직 내 업무를 연결·조정하는 기능이 포함됩니다. 개인의 사적 감정 기재나 친목 도모는 문서의 주요 기능에 해당하지 않습니다. 쉬운풀이: 사무 및 행정 문서는 업무상 의사를 전달하고 기록을 보존하며 정보를 제공하기 위해 작성되는 것으로, 사적인 친목을 도모하는 목적이 아닙니다. 원문근거: "문서의 주요 첫째, 대화로 불충분한 의사소통을 문자, 숫자, 기호 등을 활용하여 구체적으로 기록하는 기능, 둘째, 업무 지시, 연락, 계약 체결, 의견 기록, 요구나 의뢰, 결정이나 승인 등의 의사 전달 기능, 셋째, 판정 처리, 계획‧실적의 비교‧조회, 업무 사항 분류 등 의사 보존 기능, 넷째, 참고 자료나 증거 자료로 제공되어 정보 제공 수단으로 활용하여 행정 활동을 지원하는 기능, 다섯째, 작성-결재-협조 과정을 통해 조직 내의 업무를 연결하거나 조정하는 기능 등이 있다(행정안전부, 2012)." 키워드: 문서의 기능, 의사 전달, 의사 보존, 정보 제공 === END:`;
+
+/* ================= 유틸 ================= */
+const $=(s,r)=>(r||document).querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>(n<10?'0':'')+n;
+const round2=n=>Math.round(n*100)/100;
+const fmt=n=>String(+Number(n).toFixed(2));
+function today(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function addDays(s,n){const p=s.split('-').map(Number);const d=new Date(p[0],p[1]-1,p[2]+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+const norm=s=>String(s||'').replace(/\s+/g,'').toLowerCase();
+const uniq=a=>a.filter((x,i)=>a.indexOf(x)===i);
+function pageText(p){return /^\d/.test(p)?p.replace(/쪽$/,'')+'쪽':'쪽 '+p;}
+function srcText(q){return q.module+', '+q.section+', '+pageText(q.page);}
+function summary(t){t=String(t||'').replace(/\s+/g,' ').trim();if(!t)return '(해설 없음)';const m=t.match(/^.*?[^\d][.!?。](?=\s|$)/);let s=m?m[0]:t;if(s.length>90)s=s.slice(0,90)+'…';return s;}
+
+/* ================= 저장소 ================= */
+const store={ok:(function(){try{localStorage.setItem('__ncsq','1');localStorage.removeItem('__ncsq');return true;}catch(e){return false;}})(),mem:{}};
+function sget(k){try{if(store.ok)return localStorage.getItem(k);return k in store.mem?store.mem[k]:null;}catch(e){return null;}}
+function sset(k,v){if(store.ok){try{localStorage.setItem(k,v);return;}catch(e){store.ok=false;}}store.mem[k]=v;}
+function defSettings(){return{modules:[],round:'ALL',n:10,diff:[],types:[],instant:false,ratio:30,points:Object.assign({},DEFAULT_POINTS),partial:false};}
+function loadProfile(key,name){
+  let P=null;const raw=sget(key);
+  if(raw){try{P=JSON.parse(raw);}catch(e){P=null;}}
+  if(!P||typeof P!=='object')P={v:1,name:name,created:new Date().toISOString()};
+  P.name=name;P.history=Array.isArray(P.history)?P.history:[];P.wrong=(P.wrong&&typeof P.wrong==='object')?P.wrong:{};
+  P.settings=Object.assign(defSettings(),P.settings||{});P.settings.points=Object.assign({},DEFAULT_POINTS,P.settings.points||{});
+  return P;
+}
+
+/* ================= 상태 ================= */
+const S={screen:'login',P:null,key:null,nextNo:1,seen:new Set(),set:null,report:{detail:false,onlyWrong:false},
+  bank:{files:[],loading:true,auto:false,autoMsg:'',fails:[],touched:false,lastMsg:'',pasteN:0}};
+function save(){if(S.P)sset(S.key,JSON.stringify(S.P));}
+function allQuestions(){return S.bank.files.reduce((a,f)=>a.concat(f.questions),[]);}
+function byId(id){return allQuestions().find(q=>q.id===id)||null;}
+
+/* ================= 파서 (재작성) ================= */
+/* 1) 전처리: BOM, 인용 번호, 굵게, 전각 콜론, 줄바꿈 → 공백 한 칸 */
+function preprocess(text){
+  return String(text==null?'':text)
+    .replace(/^\uFEFF/,'')
+    .replace(/<sup[^>]*>[\s\S]*?<\/sup>/gi,'')
+    .replace(/<\/?strong[^>]*>/gi,'')
+    .replace(/\*\*/g,'')
+    .replace(/\[\d+(?:\s*[,\-~]\s*\d+)*\]/g,'')
+    .replace(/：/g,':')
+    .replace(/\r\n|\n|\r/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+/* 2) 블록 분리 */
+const START_SRC='===\\s*Q\\s+([^=]{1,40}?)\\s*===|((?:[A-Za-z]\\d{2}[-_ ])?(?:MC|OX|MT|SA|ES|CA)[-_ ]?\\d{3})\\s*===';
+const END_RE=/===\s*END\b\s*(?:===|:)?/i;
+function normId(raw,fileMod){
+  const s=String(raw||'').trim();
+  const m=s.match(/^(?:([A-Za-z]\d{2})[-_ ])?(MC|OX|MT|SA|ES|CA)[-_ ]?(\d{3})$/i);
+  if(m){
+    const code=m[2].toUpperCase(),pre=(m[1]||fileMod||'').toUpperCase();
+    return{id:(pre?pre+'-':'')+code+'-'+m[3],code:code};
+  }
+  const g=s.match(/(?:^|[-_ ])(MC|OX|MT|SA|ES|CA)(?:[-_ ]|\d|$)/i);
+  return{id:s.replace(/\s+/g,'-')||'(id 없음)',code:g?g[1].toUpperCase():null};
+}
+/* 3) 라벨 순서 기반 자르기 */
+const LABEL_RE=[['모듈','모듈'],['섹션','섹션'],['쪽','쪽'],['유형','유형'],['난이도','난이도'],['핵심개념번호','핵심\\s*개념\\s*번호'],['문제','문제'],['보기','보기'],['정답','정답'],['허용답안','허용\\s*답안'],['연결항목','연결\\s*항목'],['채점요소','채점\\s*요소'],['모범답안','모범\\s*답안'],['해설','해설'],['쉬운풀이','쉬운\\s*풀이'],['원문근거','원문\\s*근거'],['키워드','키워드']].map(d=>({name:d[0],src:d[1]}));
+function findLabel(text,src,from){
+  const re=new RegExp('(^|\\s)'+src+'\\s*:','g');re.lastIndex=from;
+  const m=re.exec(text);
+  return m?{start:m.index+m[1].length,vs:m.index+m[0].length}:null;
+}
+function sliceStrict(body){
+  const found=[];let cur=0;
+  LABEL_RE.forEach(L=>{const r=findLabel(body,L.src,cur);if(r){found.push({name:L.name,start:r.start,vs:r.vs});cur=r.vs;}});
+  return found;
+}
+/* 완화 규칙: 엄격 규칙으로 필수 항목을 못 찾았을 때만 사용 (모듈~문제는 순서대로, 이후 라벨은 문제 뒤에서 각각 처음 나오는 것) */
+function sliceRelaxed(body){
+  const found=[];let cur=0;
+  const qi=LABEL_RE.findIndex(l=>l.name==='문제');
+  LABEL_RE.slice(0,qi+1).forEach(L=>{const r=findLabel(body,L.src,cur);if(r){found.push({name:L.name,start:r.start,vs:r.vs});cur=r.vs;}});
+  const base=cur;
+  LABEL_RE.slice(qi+1).forEach(L=>{const r=findLabel(body,L.src,base);if(r)found.push({name:L.name,start:r.start,vs:r.vs});});
+  found.sort((a,b)=>a.start-b.start);
+  return found;
+}
+function valsFrom(found,body){
+  const v={};
+  found.forEach((f,i)=>{const end=i+1<found.length?found[i+1].start:body.length;v[f.name]=body.slice(f.vs,end).trim();});
+  return v;
+}
+/* 4) 마커 분할 */
+function splitMarks(str,items,boundary,strip){
+  const pos=[];let from=0;
+  for(const it of items){
+    const re=new RegExp((boundary?'(^|\\s)':'()')+it.src+'\\s*','g');re.lastIndex=from;
+    const m=re.exec(str);if(!m)break;
+    pos.push({lb:it.lb,start:m.index+m[1].length,end:m.index+m[0].length});from=m.index+m[0].length;
+  }
+  return pos.map((p,i)=>{
+    let t=str.slice(p.end,i+1<pos.length?pos[i+1].start:str.length);
+    if(strip)t=t.replace(/[\s,，]+$/,'');
+    return{lb:p.lb,text:t.trim()};
+  });
+}
+function parseOptions(s){
+  const fams=[
+    {b:false,it:CIRC.split('').map(c=>({lb:c,src:c}))},
+    {b:true,it:['1','2','3','4'].map(n=>({lb:n,src:'\\(?'+n+'\\)'}))},
+    {b:true,it:['A','B','C','D'].map(n=>({lb:n,src:n+'[.)]'}))}
+  ];
+  for(const f of fams){
+    const parts=splitMarks(s,f.it,f.b,false);
+    if(parts.length===4&&parts.every(p=>p.text))return parts.map((p,i)=>[CIRC[i],p.text]);
+  }
+  return null;
+}
+function toCirc(s){
+  s=String(s||'').trim();
+  let m=s.match(/[①②③④]/);if(m)return m[0];
+  m=s.match(/^[\(\[]?\s*([1-4])(?!\d)/);if(m)return CIRC[+m[1]-1];
+  m=s.match(/^[\(\[]?\s*([A-Da-d])(?![A-Za-z])/);if(m)return CIRC['ABCD'.indexOf(m[1].toUpperCase())];
+  return '';
+}
+function typeFromLabel(s){
+  const t=String(s||'').replace(/\s+/g,'');
+  if(/^4지/.test(t))return TYPES[0];if(/^진위/.test(t))return TYPES[1];if(/^연결/.test(t))return TYPES[2];
+  if(/^단답/.test(t))return TYPES[3];if(/^서술/.test(t))return /계산/.test(t)?TYPES[5]:TYPES[4];
+  return null;
+}
+/* 5) 유형별 필수 항목 검증 + 문제 객체 생성 */
+function buildQ(b,v){
+  const has=k=>Object.prototype.hasOwnProperty.call(v,k);
+  const g=k=>v[k]||'';
+  let type=typeFromLabel(g('유형'));
+  if(!type&&b.code)type=TYPE_CODES[b.code]||null;
+  if(!type)return{err:has('유형')&&g('유형')?'알 수 없는 유형: '+g('유형').slice(0,20):'유형 라벨 없음 (id로도 유형을 알 수 없음)'};
+  if(!g('문제'))return{err:has('문제')?'문제 내용 없음':'문제 라벨 없음'};
+  const dm=g('난이도').match(/^(상|중|하)/);
+  const q={id:b.id,module:g('모듈')||'(모듈 미지정)',section:g('섹션')||NONE,page:g('쪽')||NONE,type:type,
+    difficulty:dm?dm[1]:(g('난이도')||'미지정'),concept:g('핵심개념번호'),question:g('문제'),options:[],answer:'',accepts:[],
+    leftItems:[],rightItems:[],key:[],rubric:[],model:'',explain:g('해설')||NONE,easy:g('쉬운풀이')||NONE,source:g('원문근거')||NONE,
+    keywords:g('키워드').split(/[,，、]/).map(s=>s.trim()).filter(Boolean),round:'',file:'',snip:b.body.slice(0,200),relaxed:false};
+  const ansErr=()=>has('정답')?(g('정답')?null:'정답 내용 없음'):'정답 라벨 없음';
+  const ans=g('정답');
+  if(type===TYPES[0]){
+    if(!has('보기'))return{err:'보기 라벨 없음'};
+    const opts=parseOptions(g('보기'));
+    if(!opts)return{err:'보기 4개를 찾을 수 없음'};
+    const e=ansErr();if(e)return{err:e};
+    const a=toCirc(ans);if(!a)return{err:'정답을 ①~④로 해석할 수 없음: '+ans.slice(0,20)};
+    q.options=opts;q.answer=a;
+  }else if(type===TYPES[1]){
+    const e=ansErr();if(e)return{err:e};
+    const c=ans.replace(/^[\s"'“”‘’\(\[]+/,'').charAt(0);
+    if(/[OoＯ○]/.test(c))q.answer='O';else if(/[XxＸ×✕]/.test(c))q.answer='X';
+    else return{err:'진위형 정답이 O/X가 아님: '+ans.slice(0,20)};
+  }else if(type===TYPES[3]){
+    const e=ansErr();if(e)return{err:e};
+    q.answer=ans;
+    const ac=g('허용답안');
+    const extra=(!ac||/^(-|없음)$/.test(ac))?[]:ac.split(/[,，、]/).map(s=>s.trim()).filter(Boolean);
+    q.accepts=[ans].concat(extra);
+  }else if(type===TYPES[2]){
+    const raw=g('연결항목')||g('보기');
+    if(!raw)return{err:has('연결항목')?'연결항목 내용 없음':'연결항목 라벨 없음'};
+    const e=ansErr();if(e)return{err:e};
+    const idx=raw.indexOf('오른쪽');
+    if(idx<0)return{err:'연결항목에서 "오른쪽"을 찾을 수 없음'};
+    const ls=raw.slice(0,idx).replace(/^\s*왼쪽\s*:?\s*/,'');
+    const rs=raw.slice(idx+3).replace(/^\s*:?\s*/,'');
+    const L=splitMarks(ls,['1','2','3','4','5','6','7','8','9'].map(n=>({lb:n,src:n+'\\)'})),true,true);
+    const R=splitMarks(rs,['가','나','다','라','마','바','사','아'].map(n=>({lb:n,src:n+'\\)'})),true,true);
+    if(L.length<2||L.length!==R.length)return{err:'연결 항목 수가 맞지 않음 (왼쪽 '+L.length+'개, 오른쪽 '+R.length+'개)'};
+    if(L.concat(R).some(x=>!x.text))return{err:'연결 항목 내용이 비어 있음'};
+    const key=L.map(()=>'');const re=/([가-힣])\s*[-–—~]\s*(\d)/g;let m;
+    while((m=re.exec(ans))){
+      const li=L.findIndex(x=>x.lb===m[2]);
+      if(li<0||!R.some(x=>x.lb===m[1]))return{err:'연결 정답의 번호/기호가 항목에 없음: '+m[0]};
+      key[li]=m[1];
+    }
+    if(key.some(x=>!x)||uniq(key).length!==L.length)return{err:'연결 정답이 모든 왼쪽 항목에 1:1로 대응하지 않음: '+ans.slice(0,30)};
+    q.leftItems=L;q.rightItems=R;q.key=key;q.answer=ans;
+  }else{
+    if(!has('모범답안')||!g('모범답안'))return{err:has('모범답안')?'모범답안 내용 없음':'모범답안 라벨 없음'};
+    if(!has('채점요소')||!g('채점요소'))return{err:has('채점요소')?'채점요소 내용 없음':'채점요소 라벨 없음'};
+    const rub=splitMarks(g('채점요소'),['1','2','3','4'].map(n=>({lb:n,src:'\\(?'+n+'\\)'})),true,false).map(x=>x.text).filter(Boolean);
+    if(!rub.length)return{err:'채점요소 1)~4)를 찾을 수 없음'};
+    q.model=g('모범답안');q.rubric=rub;q.answer='모범답안 참조';
+  }
+  return{q:q};
+}
+function parseBlock(b){
+  const s=buildQ(b,valsFrom(sliceStrict(b.body),b.body));
+  if(s.q)return s;
+  const r=buildQ(b,valsFrom(sliceRelaxed(b.body),b.body));
+  if(r.q){r.q.relaxed=true;return r;}
+  return s;
+}
+function parseBank(text,fileName){
+  const t=preprocess(text);
+  const fileMod=((String(fileName||'').match(/M\d{2}/i)||[])[0]||'').toUpperCase();
+  const re=new RegExp(START_SRC,'gi');
+  const starts=[];let m;
+  while((m=re.exec(t))){starts.push({idx:m.index,end:m.index+m[0].length,raw:(m[1]||m[2]||'').trim()});if(m[0].length===0)re.lastIndex++;}
+  const header=starts.length?t.slice(0,starts[0].idx):t;
+  let round;const hm=header.match(/차수\s*:\s*([12])\s*차/);
+  if(hm)round=hm[1]+'차';else{const fm=String(fileName||'').match(/([12])\s*차/);round=fm?fm[1]+'차':'차수 미확인';}
+  const questions=[],errors=[],relaxed=[];
+  starts.forEach((s,i)=>{
+    let body=t.slice(s.end,i+1<starts.length?starts[i+1].idx:t.length);
+    const em=END_RE.exec(body);if(em)body=body.slice(0,em.index);
+    body=body.trim();
+    const ni=normId(s.raw,fileMod);
+    const r=parseBlock({id:ni.id,code:ni.code,body:body});
+    if(r.q){r.q.round=round;questions.push(r.q);if(r.q.relaxed)relaxed.push(ni.id);}
+    else errors.push({id:ni.id,reason:r.err,snippet:body.slice(0,200)});
+  });
+  return{round:round,questions:questions,errors:errors,markers:starts.length,relaxed:relaxed};
+}
+function addParsed(name,text,isSample){
+  const r=parseBank(text,name);
+  if(!isSample)S.bank.files=S.bank.files.filter(f=>!f.sample);
+  S.bank.files=S.bank.files.filter(f=>f.name!==name);
+  const ids=new Set();S.bank.files.forEach(f=>f.questions.forEach(q=>ids.add(q.id)));
+  const qs=[];
+  r.questions.forEach(q=>{
+    if(ids.has(q.id))r.errors.push({id:q.id,reason:'중복 id (이미 불러온 다른 블록과 같은 id)',snippet:q.snip||''});
+    else{ids.add(q.id);q.file=name;qs.push(q);}
+  });
+  r.questions=qs;r.name=name;r.sample=!!isSample;S.bank.files.push(r);return r;
+}
+async function autoLoad(){
+  S.bank.loading=true;S.bank.autoMsg='';S.bank.fails=[];
+  try{
+    if(!/^https?:$/.test(location.protocol))throw new Error('로컬 파일(file://)로 열려 있어 자동 불러오기를 쓸 수 없습니다');
+    const r=await fetch('bank/manifest.json',{cache:'no-store'});
+    if(!r.ok)throw new Error('bank/manifest.json을 읽지 못했습니다 (HTTP '+r.status+')');
+    const j=await r.json();const list=Array.isArray(j)?j:(j&&j.files);
+    if(!Array.isArray(list)||!list.length)throw new Error('manifest.json에 files 목록이 없습니다');
+    let ok=0;
+    for(const item of list){
+      const name=typeof item==='string'?item:(item&&(item.path||item.name||item.file));
+      if(!name){S.bank.fails.push({name:String(item),reason:'파일 이름 없음'});continue;}
+      try{
+        const res=await fetch('bank/'+String(name).replace(/^\/+/,''),{cache:'no-store'});
+        if(!res.ok)throw new Error('HTTP '+res.status);
+        addParsed(String(name),await res.text(),false);ok++;
+      }catch(e){S.bank.fails.push({name:String(name),reason:String(e.message||e)});}
+    }
+    if(!ok)throw new Error('manifest의 파일을 하나도 불러오지 못했습니다');
+    S.bank.auto=true;S.bank.autoMsg='자동 불러오기 성공: '+ok+'개 파일';
+  }catch(e){S.bank.auto=false;S.bank.autoMsg='자동 불러오기 실패: '+(e.message||e);}
+  S.bank.loading=false;
+}
+
+/* ================= 파서 자가 테스트 ================= */
+function runSelfTest(){
+  const T=TEST_BLOCK;
+  const between=(a,b)=>{const i=T.indexOf(a)+a.length;const j=b?T.indexOf(b,i):T.length;return T.slice(i,j).trim();};
+  const bogi=between('보기:',' 정답:');const pos=CIRC.split('').map(c=>bogi.indexOf(c));
+  const expOpts=CIRC.split('').map((c,i)=>bogi.slice(pos[i]+1,i<3?pos[i+1]:bogi.length).trim());
+  const exp={module:between('모듈:',' 섹션:'),section:between('섹션:',' 쪽:'),page:between('쪽:',' 유형:'),type:between('유형:',' 난이도:'),
+    difficulty:between('난이도:',' 핵심개념번호:'),question:between('문제:',' 보기:'),explain:between('해설:',' 쉬운풀이:'),
+    easy:between('쉬운풀이:',' 원문근거:'),source:between('원문근거:',' 키워드:'),keywords:between('키워드:',' === END:')};
+  const form2=T.replace(/ (모듈|섹션|쪽|유형|난이도|핵심개념번호|문제|보기|정답|해설|쉬운풀이|원문근거|키워드):/g,'\n$1:').replace(' === END:','\n=== END:');
+  const forms=[['① 그대로 (한 줄)',T],['② 라벨마다 줄바꿈',form2]];
+  const picks=[];let h='';
+  forms.forEach(f=>{
+    const r=parseBank(f[1],'테스트_M01_1차.txt');const q=r.questions[0];const rows=[];
+    const add=(n,ok,d)=>rows.push({n:n,ok:!!ok,d:d});
+    add('시작 표시 1개',r.markers===1,r.markers+'개');
+    add('읽은 문제 1 / 읽지 못함 0',r.questions.length===1&&r.errors.length===0,r.questions.length+' / '+r.errors.length+(r.errors[0]?' ('+r.errors[0].reason+')':''));
+    if(q){
+      picks.push(JSON.stringify([q.id,q.module,q.section,q.page,q.type,q.difficulty,q.question,q.options,q.answer,q.explain,q.easy,q.source,q.keywords]));
+      add('id',q.id==='M01-MC-001',q.id);
+      add('모듈',q.module===exp.module&&q.module==='문서 작성',q.module);
+      add('섹션',q.section===exp.section,q.section);
+      add('쪽',q.page===exp.page&&q.page==='3',q.page);
+      add('유형',q.type===exp.type,q.type);
+      add('난이도',q.difficulty===exp.difficulty&&q.difficulty==='하',q.difficulty);
+      add('문제',q.question===exp.question,q.question.slice(0,30)+'…');
+      add('보기 4개',q.options.length===4&&q.options.every((o,i)=>o[1]===expOpts[i]),q.options.length+'개');
+      add('정답 ①',q.answer==='①',q.answer);
+      add('해설',q.explain===exp.explain,q.explain.slice(0,20)+'…');
+      add('쉬운풀이',q.easy===exp.easy,q.easy.slice(0,20)+'…');
+      add('원문근거',q.source===exp.source,q.source.slice(0,20)+'…');
+      add('키워드 4개',q.keywords.join(', ')===exp.keywords&&q.keywords.length===4,q.keywords.join('|'));
+    }
+    h+='<h3>'+esc(f[0])+'</h3><table class="tt">'+rows.map(x=>'<tr><td class="tl">'+(x.ok?'✅':'❌')+' '+esc(x.n)+'</td><td>'+(x.ok?'':esc(x.d))+'</td></tr>').join('')+'</table>';
+  });
+  h+='<p><b>'+(picks.length===2&&picks[0]===picks[1]?'✅ ①과 ②의 결과가 동일합니다.':'❌ ①과 ②의 결과가 다릅니다.')+'</b></p>';
+  $('#selftest').innerHTML=h;
+}
+
+/* ================= 설정 계산 ================= */
+function present(){
+  const qs=allQuestions();
+  const diffs=uniq(qs.map(q=>q.difficulty)).sort((a,b)=>{const x=DIFF_ORDER.indexOf(a),y=DIFF_ORDER.indexOf(b);return (x<0?9:x)-(y<0?9:y);});
+  return{mods:uniq(qs.map(q=>q.module)),rounds:ROUND_ORDER.filter(r=>qs.some(q=>q.round===r)),diffs:diffs,types:TYPES.filter(t=>qs.some(q=>q.type===t))};
+}
+function eff(){
+  const s=S.P.settings,p=present();
+  const sel=(a,all)=>{const x=(a||[]).filter(v=>all.includes(v));return x.length?x:all;};
+  let round=s.round;if(round!=='ALL'&&!p.rounds.includes(round))round='ALL';if(p.rounds.length===1)round=p.rounds[0];
+  let ratio=parseFloat(s.ratio);if(isNaN(ratio))ratio=30;ratio=Math.max(0,Math.min(100,ratio));
+  return{mods:sel(s.modules,p.mods),round:round,diff:sel(s.diff,p.diffs),types:sel(s.types,p.types),n:Math.max(1,parseInt(s.n,10)||10),
+    instant:!!s.instant,ratio:ratio,points:Object.assign({},DEFAULT_POINTS,s.points||{}),partial:!!s.partial};
+}
+
+/* ================= 오답/복습 ================= */
+function dueSteps(w){const dn=w.done||[];const t=today();return [1,3,7].filter(s=>dn.indexOf(s)<0&&t>=addDays(w.date,s));}
+function markDue(w){w.done=(w.done||[]).concat(dueSteps(w));}
+function processResult(it,set){
+  const g=grade(it,set);if(g.pending)return;
+  const id=it.q.id,W=S.P.wrong;
+  if(g.correct){
+    if(it.wrongAdded){if(it.prev)W[id]=it.prev;else delete W[id];it.wrongAdded=false;}
+    else if(W[id])markDue(W[id]);
+  }else{
+    if(!it.wrongAdded){it.prev=W[id]?JSON.parse(JSON.stringify(W[id])):null;it.wrongAdded=true;}
+    W[id]={id:id,answer:g.input,date:today(),keywords:it.q.keywords.slice(),done:[]};
+  }
+  save();
+}
+
+/* ================= 출제 ================= */
+function makeSet(){
+  const e=eff(),W=S.P.wrong;
+  const pool=allQuestions().filter(q=>e.mods.includes(q.module)&&(e.round==='ALL'||q.round===e.round)&&e.diff.includes(q.difficulty)&&e.types.includes(q.type));
+  if(!pool.length)return{err:'선택한 조건에 맞는 문제가 없습니다. 설정을 바꿔 주세요.'};
+  const N=Math.min(e.n,pool.length);
+  const wrongIds=new Set(Object.keys(W));
+  const nk=s=>norm(s);
+  const kw=new Set();Object.keys(W).forEach(id=>{const w=W[id];let ks=w.keywords||[];const q=byId(id);if(q)ks=ks.concat(q.keywords);ks.forEach(k=>kw.add(nk(k)));});
+  const tier=q=>wrongIds.has(q.id)?(dueSteps(W[q.id]).length?0:1):(q.keywords.some(k=>kw.has(nk(k)))?2:-1);
+  const unseenFirst=l=>shuffle(l.filter(q=>!S.seen.has(q.id))).concat(shuffle(l.filter(q=>S.seen.has(q.id))));
+  const pri=[0,1,2].reduce((a,t)=>a.concat(unseenFirst(pool.filter(q=>tier(q)===t))),[]);
+  const k=Math.min(pri.length,Math.round(N*e.ratio/100),N);
+  const picked=pri.slice(0,k);
+  const ids=new Set(picked.map(q=>q.id));
+  const rest=unseenFirst(pool.filter(q=>!ids.has(q.id))).slice(0,N-k);
+  const qs=shuffle(picked.concat(rest));
+  const notes=[];
+  if(pool.length<e.n)notes.push('선택 가능한 문제가 '+pool.length+'개뿐이어서 요청한 '+e.n+'문제 중 '+pool.length+'문제만 출제했습니다.');
+  if(k>0)notes.push('오답과 관련된 문제 '+k+'개를 우선 포함했습니다.');
+  if(qs.some(q=>S.seen.has(q.id)))notes.push('이번 세션에서 이미 푼 문제가 일부 다시 포함되었습니다.');
+  return{qs:qs,notice:notes.join(' ')};
+}
+function startSet(qs,notice){
+  const e=eff();
+  const set={items:[],idx:0,submitted:false,notice:notice||'',cfg:{instant:e.instant,partial:e.partial,points:Object.assign({},e.points)}};
+  qs.forEach(q=>{
+    set.items.push({q:q,no:S.nextNo++,answer:q.type===TYPES[2]?q.leftItems.map(()=>''):'',unknown:false,checked:false,override:false,
+      rub:q.rubric.map(()=>false),selfGraded:false,wrongAdded:false,prev:null});
+    S.seen.add(q.id);
+  });
+  S.set=set;S.screen='solve';render();
+}
+
+/* ================= 채점 ================= */
+const isEssay=q=>q.type===TYPES[4]||q.type===TYPES[5];
+function ptsOf(set,q){const p=Number(set.cfg.points[q.type]);return isNaN(p)?DEFAULT_POINTS[q.type]:p;}
+function pairsText(q,arr){const out=[];q.rightItems.forEach(r=>{const i=arr.indexOf(r.lb);if(i>=0)out.push(r.lb+'-'+q.leftItems[i].lb);});return out.join(', ');}
+function answerText(q){
+  if(q.type===TYPES[0]){const o=q.options.find(x=>x[0]===q.answer);return q.answer+(o?' '+o[1]:'');}
+  if(q.type===TYPES[1])return q.answer;
+  if(q.type===TYPES[2])return pairsText(q,q.key);
+  if(q.type===TYPES[3])return q.answer+(q.accepts.length>1?' (허용: '+q.accepts.slice(1).join(', ')+')':'');
+  return '모범답안 참조';
+}
+function isAnswered(it){
+  if(it.unknown)return true;
+  if(it.q.type===TYPES[2])return it.answer.length===it.q.leftItems.length&&it.answer.every(Boolean);
+  return typeof it.answer==='string'&&it.answer.trim()!=='';
+}
+function grade(it,set){
+  const q=it.q,max=ptsOf(set,q);let earned=0,correct=false,input='',pending=false;
+  if(q.type===TYPES[0]){
+    if(it.answer){const o=q.options.find(x=>x[0]===it.answer);input=it.answer+(o?' '+o[1]:'');}
+    correct=!it.unknown&&it.answer===q.answer;earned=correct?max:0;
+  }else if(q.type===TYPES[1]){
+    input=it.answer||'';correct=!it.unknown&&it.answer===q.answer;earned=correct?max:0;
+  }else if(q.type===TYPES[2]){
+    const n=q.leftItems.length;let cp=0;
+    if(!it.unknown)q.key.forEach((k,i)=>{if(it.answer[i]===k)cp++;});
+    correct=!it.unknown&&cp===n;
+    earned=set.cfg.partial?round2(max*cp/n):(correct?max:0);
+    input=it.unknown?'':pairsText(q,it.answer);
+  }else if(q.type===TYPES[3]){
+    const x=norm(it.answer);
+    correct=!it.unknown&&(it.override||(x!==''&&q.accepts.some(a=>norm(a)===x)));
+    earned=correct?max:0;input=(it.answer||'').trim();
+  }else{
+    const n=q.rubric.length;const cnt=it.unknown?0:it.rub.filter(Boolean).length;
+    earned=round2(max*cnt/n);correct=cnt===n;input=(it.answer||'').trim();
+    pending=!it.unknown&&!it.selfGraded;
+  }
+  if(it.unknown)input='모름';
+  return{max:max,earned:earned,correct:correct,pending:pending,input:input,answerText:answerText(q)};
+}
+function totals(set){
+  const r={e:0,m:0,by:{},pend:0};
+  set.items.forEach(it=>{const g=grade(it,set);r.e+=g.earned;r.m+=g.max;const b=r.by[it.q.type]||(r.by[it.q.type]={e:0,m:0,n:0});b.e+=g.earned;b.m+=g.max;b.n++;if(g.pending)r.pend++;});
+  r.e=round2(r.e);return r;
+}
+function refreshHist(){
+  const set=S.set;if(!set||!set.hist)return;
+  const t=totals(set);set.hist.score=t.e;set.hist.max=t.m;
+  set.hist.by={};Object.keys(t.by).forEach(k=>set.hist.by[k]={e:round2(t.by[k].e),m:t.by[k].m});
+  save();
+}
+
+/* ================= 화면: 공통 ================= */
+function setMsg(t,type){const m=$('#msg');if(!m){alert(t);return;}m.className='msg '+(type||'err');m.textContent=t;try{m.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){}}
+function storeWarn(){return store.ok?'':'<div class="note" style="max-width:640px;margin:8px auto">이 환경에서는 저장되지 않으니 내보내기를 사용하세요.</div>';}
+function vHeader(){
+  const tab=(s,l)=>'<button data-act="go" data-s="'+s+'" class="'+(S.screen===s?'on':'')+'">'+l+'</button>';
+  let mid='';
+  if(S.set)mid=S.set.submitted?tab('report','리포트'):tab('solve','풀이');
+  return '<header class="top"><div class="row"><span class="brand">NCS 지필고사 연습</span><span class="who">'+esc(S.P.name)+' <button class="chip2" data-act="logout">나가기</button></span></div><nav class="tabs">'+tab('settings','설정')+mid+tab('notes','오답노트')+tab('bank','문제은행')+'</nav></header>';
+}
+function render(keep){
+  const app=$('#app');let body='';
+  if(S.screen!=='login'&&!S.P)S.screen='login';
+  if(S.screen==='solve'&&!S.set)S.screen='settings';
+  if(S.screen==='report'&&!(S.set&&S.set.submitted))S.screen=S.set?'solve':'settings';
+  switch(S.screen){
+    case 'login':body=vLogin();break;case 'bank':body=vBank();break;case 'settings':body=vSettings();break;
+    case 'solve':body=vSolve();break;case 'report':body=vReport();break;case 'notes':body=vNotes();break;
+  }
+  app.innerHTML=(S.screen==='login'?'':vHeader()+storeWarn())+'<main class="wrap">'+(S.screen==='login'?storeWarn():'')+body+'</main>';
+  if(!keep)window.scrollTo(0,0);
+}
+
+/* ================= 화면: 로그인 ================= */
+function vLogin(){
+  let chips='';
+  if(store.ok){try{
+    const names=[];
+    for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('ncsq1:')===0){const nm=decodeURIComponent(k.split(':')[1]);if(names.indexOf(nm)<0)names.push(nm);}}
+    chips=names.map(n=>'<button class="chip2" data-act="fillname" data-n="'+esc(n)+'">'+esc(n)+'</button>').join('');
+  }catch(e){}}
+  const cnt=allQuestions().length;
+  return '<h2 style="margin-top:24px">NCS 지필고사 연습</h2><div class="card"><div id="msg" class="msg"></div>'
+   +'<label class="fld" for="nm">이름</label><input id="nm" type="text" autocomplete="off" maxlength="30" placeholder="이름">'
+   +(chips?'<div style="margin-top:6px"><small>이 기기의 프로필:</small> '+chips+'</div>':'')
+   +'<label class="fld" for="pin">PIN 4자리</label><input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="0000">'
+   +'<p class="mut"><small>이름과 PIN은 보안용이 아니라 프로필 구분용입니다.</small></p>'
+   +'<button class="btn pri block big" data-act="login">시작하기</button></div>'
+   +'<p class="mut">문제은행: '+(S.bank.loading?'자동 불러오는 중…':(cnt?cnt+'문제 불러옴':'불러온 문제 없음'))+'</p>';
+}
+
+/* ================= 화면: 문제은행 ================= */
+function vParse(){
+  const fs=S.bank.files;if(!fs.length&&!S.bank.fails.length)return '';
+  let tot=0,bad=0,mk=0;
+  fs.forEach(f=>{tot+=f.questions.length;bad+=f.errors.length;mk+=f.markers||0;});
+  let h='<section class="card"><h3>파싱 결과</h3><p>원본에서 시작 표시를 찾은 개수: <b>'+mk+'</b>개 · 읽은 문제 <b>'+tot+'</b>개 · 읽지 못한 문제 <b>'+bad+'</b>개</p>';
+  fs.forEach(f=>{
+    const byT={},byD={};
+    f.questions.forEach(q=>{byT[q.type]=(byT[q.type]||0)+1;byD[q.difficulty]=(byD[q.difficulty]||0)+1;});
+    h+='<div class="pf"><b>'+esc(f.name)+'</b>'+(f.sample?' <small>(내장 샘플)</small>':'')
+      +'<div>차수: '+esc(f.round)+'</div>'
+      +'<div>시작 표시 '+f.markers+'개 · 읽은 문제 <b>'+f.questions.length+'</b>개 · 읽지 못한 문제 <b>'+f.errors.length+'</b>개</div>'
+      +'<div>유형별: '+(TYPES.filter(t=>byT[t]).map(t=>esc(t)+' '+byT[t]).join(', ')||'-')+'</div>'
+      +'<div>난이도별: '+(Object.keys(byD).map(d=>esc(d)+' '+byD[d]).join(', ')||'-')+'</div>'
+      +(f.markers===0?'<ul class="errs"><li>시작 표시("=== Q …===" 또는 "MC 001 ===")를 찾지 못했습니다. 파일 내용을 확인하세요.</li></ul>':'')
+      +(f.relaxed&&f.relaxed.length?'<div class="mut"><small>라벨 순서가 달라 완화 규칙으로 읽은 블록: '+esc(f.relaxed.join(', '))+'</small></div>':'')
+      +(f.errors.length?'<ul class="errs">'+f.errors.map(e=>'<li><b>'+esc(e.id)+'</b>: '+esc(e.reason)+(e.snippet?'<div class="snip">'+esc(e.snippet)+'</div>':'')+'</li>').join('')+'</ul>':'')+'</div>';
+  });
+  S.bank.fails.forEach(x=>{h+='<div class="pf"><b>'+esc(x.name)+'</b><ul class="errs"><li>파일을 불러오지 못함: '+esc(x.reason)+'</li></ul></div>';});
+  return h+'</section>';
+}
+function vBank(){
+  const real=S.bank.files.some(f=>!f.sample),cnt=allQuestions().length;
+  let h='<h2>문제은행</h2><div id="msg" class="msg"></div>';
+  if(S.bank.loading)h+='<div class="auto">자동 불러오는 중…</div>';
+  else if(S.bank.auto)h+='<div class="msg okm">'+esc(S.bank.autoMsg)+'</div>';
+  else if(S.bank.autoMsg)h+='<div class="note"><b>'+esc(S.bank.autoMsg)+'</b><br>앱과 같은 위치의 <code>bank/manifest.json</code>을 읽지 못하면(예: 로컬 파일로 열었을 때) 아래에서 .txt 파일을 올리거나 텍스트를 붙여넣어 불러오세요.</div>';
+  if(S.bank.lastMsg)h+='<div class="msg okm">'+esc(S.bank.lastMsg)+'</div>';
+  if(cnt)h+='<button class="btn pri block" data-act="go" data-s="settings">설정으로 이동 ('+cnt+'문제)</button>';
+  h+=vParse();
+  h+='<section class="card"><h3>수동 불러오기</h3><label class="fld" for="fl">.txt 파일 (여러 개 선택 가능, UTF-8)</label><input id="fl" type="file" multiple accept=".txt,text/plain">'
+   +'<label class="fld" for="pname">붙여넣기 파일 이름 (선택, 예: 문서작성_M01_1차.txt)</label><input id="pname" type="text" placeholder="이름에 M01·1차/2차가 있으면 id·차수 판단에 사용">'
+   +'<label class="fld" for="ptxt">문제은행 텍스트 붙여넣기</label><textarea id="ptxt" rows="6" placeholder="문제 블록이 포함된 텍스트"></textarea>'
+   +'<button class="btn block" style="margin-top:10px" data-act="addtext">붙여넣은 텍스트 불러오기</button></section>';
+  h+='<section class="card"><h3>기타</h3>'
+   +(real?'<p class="mut">실제 문서를 불러와서 샘플은 제외되었습니다.</p>':'<button class="btn block" data-act="sample">샘플로 연습</button>')
+   +'<button class="btn block" data-act="retryauto">자동 불러오기 다시 시도</button>'
+   +'<button class="btn block" data-act="clearbank">불러온 문제은행 모두 지우기</button></section>';
+  h+='<section class="card"><details><summary>파서 자가 테스트</summary><p class="mut"><small>테스트 블록 1개를 (①) 한 줄 그대로, (②) 라벨마다 줄바꿈한 형태로 각각 파싱해 필드별로 비교합니다. 문제은행에는 추가되지 않습니다.</small></p><button class="btn block" data-act="selftest">테스트 실행</button><div id="selftest"></div></details></section>';
+  return h;
+}
+
+/* ================= 화면: 설정 ================= */
+function dataBlock(){
+  return '<section class="card"><h3>데이터 내보내기/가져오기</h3><button class="btn block" data-act="export">내보내기 (JSON 파일)</button>'
+   +'<textarea id="expbox" rows="4" readonly style="display:none" placeholder="내보내기 텍스트"></textarea>'
+   +'<label class="fld" for="imp">가져오기 (JSON 파일)</label><input id="imp" type="file" accept=".json,application/json">'
+   +'<label class="fld" for="imptxt">또는 JSON 텍스트 붙여넣기</label><textarea id="imptxt" rows="3"></textarea>'
+   +'<button class="btn block" style="margin-top:8px" data-act="importtext">붙여넣은 JSON 가져오기</button>'
+   +'<p class="mut"><small>가져오기는 현재 프로필에 합쳐집니다(오답은 최신 날짜 우선).</small></p></section>';
+}
+function vSettings(){
+  const p=present();
+  if(!p.mods.length)return '<div class="card"><p>불러온 문제가 없습니다.</p><button class="btn pri block" data-act="go" data-s="bank">문제은행 불러오기</button></div>';
+  const e=eff(),qs=allQuestions(),W=S.P.wrong;
+  let h='<h2>연습 설정</h2><div id="msg" class="msg"></div>';
+  if(S.bank.files.every(f=>f.sample))h+='<div class="note">내장 샘플 문제로 연습 중입니다. 실제 문제은행을 불러오면 샘플은 제외됩니다.</div>';
+  const dueN=Object.keys(W).filter(id=>byId(id)&&dueSteps(W[id]).length).length;
+  if(dueN)h+='<div class="note">🔔 오늘 복습 대상 오답이 '+dueN+'개 있습니다. <button class="chip2" data-act="go" data-s="notes">오답노트 열기</button></div>';
+  h+='<section class="card"><h3>1. 모듈</h3>';
+  if(p.mods.length===1)h+='<div class="auto">모듈이 1개뿐이라 자동 선택되었습니다: <b>'+esc(p.mods[0])+'</b></div>';
+  else{
+    h+='<button class="btn sm" data-act="modall">전체 선택/해제</button>';
+    p.mods.forEach((m,i)=>{h+='<label class="ck"><input type="checkbox" data-mod value="'+i+'"'+(e.mods.includes(m)?' checked':'')+'><span>'+esc(m)+' <small>('+qs.filter(q=>q.module===m).length+'문제)</small></span></label>';});
+  }
+  h+='<h3>2. 차수</h3>';
+  if(p.rounds.length===1)h+='<div class="auto">불러온 문제의 차수가 1개뿐이라 자동 선택되었습니다: <b>'+esc(ROUND_LABEL[p.rounds[0]])+'</b></div>';
+  else{
+    p.rounds.concat(['ALL']).forEach(r=>{h+='<label class="ck"><input type="radio" name="round" value="'+r+'"'+(e.round===r?' checked':'')+'><span>'+(r==='ALL'?'전체':esc(ROUND_LABEL[r]))+'</span></label>';});
+  }
+  h+='<h3>3. 한 번에 풀 문제 수</h3><div class="nrow"><input id="n" type="number" inputmode="numeric" min="1" max="200" value="'+e.n+'">'
+    +[5,10,15].map(n=>'<button class="btn sm" data-act="setn" data-n="'+n+'">'+n+'</button>').join('')+'</div></section>';
+  h+='<section class="card"><details><summary>고급 옵션</summary>'
+   +'<h3>난이도 필터</h3>'+p.diffs.map(d=>'<label class="ck"><input type="checkbox" data-diff value="'+esc(d)+'"'+(e.diff.includes(d)?' checked':'')+'><span>'+esc(d)+'</span></label>').join('')
+   +'<h3>유형 필터</h3>'+p.types.map(t=>'<label class="ck"><input type="checkbox" data-type value="'+esc(t)+'"'+(e.types.includes(t)?' checked':'')+'><span>'+esc(t)+'</span></label>').join('')
+   +'<h3>채점 시점</h3><label class="ck"><input type="radio" name="timing" value="e"'+(e.instant?'':' checked')+'><span>세트 종료 후 (기본)</span></label>'
+   +'<label class="ck"><input type="radio" name="timing" value="i"'+(e.instant?' checked':'')+'><span>문제마다 즉시</span></label>'
+   +'<h3>오답 우선 포함 비율 (%)</h3><input id="ratio" type="number" inputmode="numeric" min="0" max="100" value="'+e.ratio+'">'
+   +'<h3>유형별 배점</h3>'+TYPES.map(t=>'<div class="ptrow"><span>'+esc(t)+'</span><input type="number" step="0.5" min="0" data-pt="'+esc(t)+'" value="'+e.points[t]+'"></div>').join('')
+   +'<p class="mut"><small>서술형은 채점요소 1개당 (배점 ÷ 채점요소 수)점으로 자가 채점합니다(기본: 4점, 요소 4개 → 요소당 1점).</small></p>'
+   +'<label class="ck"><input type="checkbox" id="partial"'+(e.partial?' checked':'')+'><span>연결형 쌍당 부분 점수 (끄면 모든 쌍이 맞아야 득점)</span></label>'
+   +'</details></section>';
+  h+='<button class="btn pri block big" data-act="start">시작</button>';
+  const hs=S.P.history.slice(-5).reverse();
+  if(hs.length)h+='<section class="card"><h3>최근 풀이 기록</h3>'+hs.map(x=>'<div class="pf">'+esc(new Date(x.date).toLocaleString('ko-KR'))+' · ['+x.from+'번~'+x.to+'번] '+fmt(x.score)+' / '+fmt(x.max)+'점</div>').join('')+'</section>';
+  return h+dataBlock();
+}
+function collectSettings(){
+  const p=present(),s=S.P.settings;
+  let mods;
+  if(p.mods.length>1)mods=[...document.querySelectorAll('input[data-mod]:checked')].map(i=>p.mods[+i.value]);else mods=p.mods.slice();
+  if(!mods.length)return '모듈을 1개 이상 선택하세요.';
+  const diff=[...document.querySelectorAll('input[data-diff]:checked')].map(i=>i.value);
+  if(!diff.length)return '난이도를 1개 이상 선택하세요(고급 옵션).';
+  const types=[...document.querySelectorAll('input[data-type]:checked')].map(i=>i.value);
+  if(!types.length)return '유형을 1개 이상 선택하세요(고급 옵션).';
+  const n=parseInt($('#n').value,10);
+  if(!(n>=1))return '문제 수는 1 이상의 숫자로 입력하세요.';
+  const ratio=parseFloat($('#ratio').value);
+  if(isNaN(ratio)||ratio<0||ratio>100)return '오답 우선 비율은 0~100 사이로 입력하세요.';
+  const pts={};
+  for(const i of document.querySelectorAll('input[data-pt]')){const v=parseFloat(i.value);if(isNaN(v)||v<0)return '배점은 0 이상의 숫자로 입력하세요.';pts[i.dataset.pt]=v;}
+  s.modules=mods;s.diff=diff;s.types=types;s.n=n;s.ratio=ratio;s.points=Object.assign({},DEFAULT_POINTS,pts);
+  if(p.rounds.length>1){const r=document.querySelector('input[name=round]:checked');s.round=r?r.value:'ALL';}else s.round=p.rounds[0]||'ALL';
+  const tm=document.querySelector('input[name=timing]:checked');s.instant=!!(tm&&tm.value==='i');
+  s.partial=!!$('#partial').checked;
+  save();return '';
+}
+
+/* ================= 화면: 풀이 ================= */
+const cur=()=>S.set.items[S.set.idx];
+const lockedNow=it=>S.set.cfg.instant&&it.checked;
+function matchHTML(it,dis){
+  const q=it.q;
+  let h='<div class="mbox"><b>오른쪽 항목</b>'+q.rightItems.map(r=>'<div class="mi"><b>'+esc(r.lb)+')</b> '+esc(r.text)+'</div>').join('')+'</div>';
+  h+=q.leftItems.map((l,i)=>'<div class="mrow"><div class="ml"><b>'+esc(l.lb)+')</b> '+esc(l.text)+'</div><select class="sel" data-in="match" data-i="'+i+'"'+dis+'><option value="">선택</option>'
+    +q.rightItems.map(r=>'<option value="'+esc(r.lb)+'"'+(it.answer[i]===r.lb?' selected':'')+'>'+esc(r.lb)+')</option>').join('')+'</select></div>').join('');
+  return h;
+}
+function vSolve(){
+  const set=S.set,it=cur(),q=it.q,n=set.items.length,dis=lockedNow(it)?' disabled':'';
+  const ansN=set.items.filter(isAnswered).length;
+  let w='';
+  if(q.type===TYPES[0])w=q.options.map(o=>'<button class="choice'+(it.answer===o[0]?' sel':'')+'" data-act="pick" data-v="'+o[0]+'"'+dis+'><span class="cn">'+o[0]+'</span><span class="ct">'+esc(o[1])+'</span></button>').join('');
+  else if(q.type===TYPES[1])w='<div class="ox">'+['O','X'].map(v=>'<button class="choice'+(it.answer===v?' sel':'')+'" data-act="pick" data-v="'+v+'"'+dis+'>'+v+'</button>').join('')+'</div>';
+  else if(q.type===TYPES[2])w=matchHTML(it,dis);
+  else if(q.type===TYPES[3])w='<input class="inp" id="ans" data-in="text" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="정답을 입력하세요" value="'+esc(it.answer)+'"'+dis+'>';
+  else w='<textarea class="inp" id="ans" data-in="text" rows="8" placeholder="답안을 작성하세요"'+dis+'>'+esc(it.answer)+'</textarea>';
+  let h='<div class="progress"><div class="pt"><b>'+(set.idx+1)+'/'+n+'</b><span class="mut">답한 문제 <span id="acnt">'+ansN+'</span>/'+n+'</span></div><div class="pb"><i style="width:'+((set.idx+1)/n*100)+'%"></i></div></div>';
+  h+='<div class="chips" id="chips">'+set.items.map((x,i)=>'<button class="chip'+(i===set.idx?' cur':'')+(isAnswered(x)?' done':'')+'" data-act="goq" data-i="'+i+'">'+x.no+'</button>').join('')+'</div>';
+  h+='<div id="msg" class="msg"></div>';
+  if(set.notice&&set.idx===0)h+='<div class="note">'+esc(set.notice)+'</div>';
+  h+='<h2>'+it.no+'번. '+esc(q.type)+' ('+fmt(ptsOf(set,q))+'점)</h2><div class="qtext">'+esc(q.question)+'</div>';
+  if(it.unknown)h+='<div class="note bad" id="unk">"모름"으로 처리되었습니다(오답). 답을 고르거나 입력하면 해제됩니다.</div>';
+  h+=w;
+  if(!lockedNow(it))h+='<button class="btn block" data-act="unknown" style="margin-top:6px">모름 (오답 처리)</button>';
+  if(set.cfg.instant){
+    if(!it.checked)h+='<button class="btn pri block" data-act="check">정답 확인</button>';
+    else h+='<div style="margin-top:10px">'+cardHTML(it,{inline:true})+'</div>';
+  }
+  h+='<div class="bar"><button class="btn" data-act="prev"'+(set.idx===0?' disabled':'')+'>← 이전</button><button class="btn" data-act="next"'+(set.idx===n-1?' disabled':'')+'>다음 →</button></div>';
+  h+='<button class="btn pri block" data-act="submit">세트 제출</button>';
+  return h;
+}
+function updateChips(){
+  const set=S.set;if(!set)return;
+  document.querySelectorAll('#chips .chip').forEach((b,i)=>{b.className='chip'+(i===set.idx?' cur':'')+(isAnswered(set.items[i])?' done':'');});
+  const a=$('#acnt');if(a)a.textContent=set.items.filter(isAnswered).length;
+}
+
+/* ================= 리포트/카드 ================= */
+function reviewBody(it){
+  const q=it.q;let h='<div class="qtext sm">'+esc(q.question)+'</div>';
+  if(q.type===TYPES[0])h+=q.options.map(o=>'<div class="opt'+(o[0]===q.answer?' ok':'')+(it.answer===o[0]&&!it.unknown?' mine'+(o[0]===q.answer?'':' bad'):'')+'"><b>'+o[0]+'</b> '+esc(o[1])+(o[0]===q.answer?' ← 정답':'')+(it.answer===o[0]&&!it.unknown?' ← 내 선택':'')+'</div>').join('');
+  else if(q.type===TYPES[1])h+=['O','X'].map(v=>'<div class="opt'+(v===q.answer?' ok':'')+(it.answer===v&&!it.unknown?' mine'+(v===q.answer?'':' bad'):'')+'"><b>'+v+'</b>'+(v===q.answer?' ← 정답':'')+(it.answer===v&&!it.unknown?' ← 내 선택':'')+'</div>').join('');
+  else if(q.type===TYPES[2])h+='<div class="mbox">'+q.leftItems.map((l,i)=>'<div class="mi"><b>'+esc(l.lb)+')</b> '+esc(l.text)+' → 정답 '+esc(q.key[i])+') / 내 답 '+(it.answer[i]?esc(it.answer[i])+')':'-')+'</div>').join('')+'</div>'
+    +'<div class="mbox"><b>오른쪽 항목</b>'+q.rightItems.map(r=>'<div class="mi"><b>'+esc(r.lb)+')</b> '+esc(r.text)+'</div>').join('')+'</div>';
+  return h;
+}
+function cardHTML(it,opt){
+  opt=opt||{};const set=S.set,q=it.q,g=grade(it,set);
+  let lab;
+  if(g.pending)lab='⏳ 자가 채점 전';else if(g.correct)lab='✅ 정답';else lab='❌ 오답'+(g.earned>0?' ('+fmt(g.earned)+'/'+fmt(g.max)+'점)':'');
+  let h='<div class="rc" id="rc-'+it.no+'" data-inline="'+(opt.inline?1:0)+'" data-detail="'+(opt.detail?1:0)+'">';
+  h+='<div class="rhead"><b>'+it.no+'번:</b> '+lab+'<div class="io">(입력: '+esc(g.input||'(없음)')+' / 정답: '+esc(g.answerText)+')</div></div>';
+  h+='<div class="src">[출처]: '+esc(srcText(q))+'</div>';
+  if(opt.detail&&!opt.inline)h+=reviewBody(it);
+  if(isEssay(q)){
+    const n=q.rubric.length;
+    h+='<div class="model"><b>모범답안</b><div class="pre">'+esc(q.model)+'</div></div>';
+    h+='<div><b>채점요소 (자가 채점 · 요소당 '+fmt(g.max/n)+'점)</b>'+q.rubric.map((r,i)=>'<label class="rub"><input type="checkbox" data-in="rub" data-no="'+it.no+'" data-i="'+i+'"'+(it.rub[i]&&!it.unknown?' checked':'')+(it.unknown?' disabled':'')+'><span>'+(i+1)+') '+esc(r)+'</span></label>').join('')+'</div>';
+  }
+  if(q.type===TYPES[3]&&!g.correct&&!it.unknown)h+='<button class="btn sm" data-act="override" data-no="'+it.no+'">내 답도 맞는 표현입니다</button>';
+  h+='<div class="sum">[핵심 해설]: '+esc(summary(q.explain))+'</div>';
+  h+='<details'+(opt.open?' open':'')+'><summary>해설 전문 · 원문근거 · 보조 설명 펼치기</summary>'
+    +'<div class="pre"><b>해설</b>\n'+esc(q.explain||NONE)+'</div>'
+    +'<div class="pre"><b>원문근거</b>\n'+esc(q.source||NONE)+'</div>'
+    +'<div class="pre aux"><b>보조 설명</b>\n'+esc(q.easy||NONE)+'</div></details></div>';
+  return h;
+}
+function updateCard(it){
+  const el=document.getElementById('rc-'+it.no);if(!el)return;
+  const open=[...el.querySelectorAll('details')].map(d=>d.open);
+  const inl=el.dataset.inline==='1',det=el.dataset.detail==='1';
+  el.outerHTML=cardHTML(it,{inline:inl,detail:det,open:det});
+  const nel=document.getElementById('rc-'+it.no);
+  if(nel)nel.querySelectorAll('details').forEach((d,i)=>{if(open[i])d.open=true;});
+}
+function topHTML(set){
+  const t=totals(set);
+  let h='<div class="card score" id="rtop"><div><span class="big">'+fmt(t.e)+'</span> / '+fmt(t.m)+'점 <span class="mut">세트 점수</span></div><table class="tt"><tr><th>유형</th><th>문항</th><th>득점</th></tr>';
+  TYPES.forEach(ty=>{const b=t.by[ty];if(b)h+='<tr><td>'+esc(ty)+'</td><td>'+b.n+'</td><td>'+fmt(b.e)+' / '+fmt(b.m)+'</td></tr>';});
+  h+='</table>';
+  if(t.pend)h+='<p class="note" style="margin-top:8px">서술형 '+t.pend+'문제가 자가 채점 전입니다. 아래 체크박스로 채점하면 점수가 갱신됩니다.</p>';
+  return h+'</div>';
+}
+function updateTop(){const el=$('#rtop');if(el&&S.set)el.outerHTML=topHTML(S.set);}
+function vReport(){
+  const set=S.set,first=set.items[0].no,last=set.items[set.items.length-1].no;
+  let items=set.items;if(S.report.onlyWrong)items=items.filter(it=>!grade(it,set).correct);
+  let h='<h2>세트 결과</h2><div id="msg" class="msg"></div>'+topHTML(set);
+  h+='<h3>📊 ['+first+'번~'+last+'번] 문제 채점 결과</h3>';
+  h+=items.length?items.map(it=>cardHTML(it,{detail:S.report.detail,open:S.report.detail})).join(''):'<div class="note">표시할 오답이 없습니다. 🎉</div>';
+  h+='<div class="btns"><button class="btn block" data-act="rdetail">'+(S.report.detail?'간단히 보기':'정답과 해설 자세히 보기')+'</button>'
+    +'<button class="btn block" data-act="rwrong">'+(S.report.onlyWrong?'전체 보기':'오답만 보기')+'</button>'
+    +'<button class="btn pri block" data-act="nextset">다음 문제 계속 풀기</button>'
+    +'<button class="btn block" data-act="go" data-s="settings">설정 변경</button></div>';
+  return h;
+}
+
+/* ================= 화면: 오답노트 ================= */
+function vNotes(){
+  const W=S.P.wrong;const rows=Object.keys(W).map(id=>({w:W[id],q:byId(id)}));
+  rows.sort((a,b)=>((dueSteps(b.w).length>0)-(dueSteps(a.w).length>0))||String(b.w.date).localeCompare(String(a.w.date)));
+  const dueN=rows.filter(r=>r.q&&dueSteps(r.w).length).length,allN=rows.filter(r=>r.q).length;
+  let h='<h2>오답 노트</h2><div id="msg" class="msg"></div><p class="mut">저장된 오답 '+rows.length+'개 · 오늘 복습 대상 '+dueN+'개</p>';
+  h+='<div class="btns" style="margin-top:0"><button class="btn pri block" data-act="redo" data-due="0"'+(allN?'':' disabled')+'>오답만 다시 풀기 ('+allN+'문제)</button>'
+    +'<button class="btn block" data-act="redo" data-due="1"'+(dueN?'':' disabled')+'>오늘 복습 대상만 풀기 ('+dueN+'문제)</button></div>';
+  if(rows.length>allN)h+='<div class="note">현재 불러온 문제은행에 없는 오답이 '+(rows.length-allN)+'개 있습니다. 문제은행을 불러오면 문제가 표시됩니다.</div>';
+  if(!rows.length)h+='<div class="card">저장된 오답이 없습니다.</div>';
+  rows.forEach(r=>{
+    const w=r.w,q=r.q,t=today();
+    const chips=[1,3,7].map(s=>{const d=addDays(w.date,s);const st=(w.done||[]).indexOf(s)>=0?['done','완료']:(t>=d?['due',t===d?'오늘 복습':'복습 필요']:['','예정']);return '<span class="rv '+st[0]+'">'+s+'일 뒤 '+d.slice(5).replace('-','/')+' · '+st[1]+'</span>';}).join('');
+    h+='<div class="card"><div><small>'+esc(w.id)+' · 틀린 날 '+esc(w.date)+'</small></div><div style="margin:4px 0">'+chips+'</div>';
+    if(q){
+      h+='<div class="qtext sm"><b>['+esc(q.type)+']</b> '+esc(q.question)+'</div><div><b>내 답:</b> <span class="pre">'+esc(w.answer||'(없음)')+'</span></div><div><b>정답:</b> '+esc(answerText(q))+'</div>';
+      if(isEssay(q))h+='<div class="model"><b>모범답안</b><div class="pre">'+esc(q.model)+'</div></div>';
+      h+='<div class="sum"><b>해설:</b> <span class="pre">'+esc(q.explain||NONE)+'</span></div><div class="src">[출처]: '+esc(srcText(q))+'</div>'
+        +'<details><summary>원문근거 · 보조 설명</summary><div class="pre"><b>원문근거</b>\n'+esc(q.source||NONE)+'</div><div class="pre aux"><b>보조 설명</b>\n'+esc(q.easy||NONE)+'</div></details>';
+    }else h+='<div><b>내 답:</b> '+esc(w.answer||'(없음)')+'</div><div class="mut">문제은행에 이 문제가 없어 문제·정답·해설을 표시할 수 없습니다.</div>';
+    h+='<div class="mut"><small>키워드: '+esc((w.keywords||[]).join(', ')||NONE)+'</small></div><button class="btn sm" data-act="delwrong" data-id="'+esc(w.id)+'">오답 삭제</button></div>';
+  });
+  return h+dataBlock();
+}
+
+/* ================= 내보내기/가져오기 ================= */
+function exportJSON(){
+  const txt=JSON.stringify({app:'ncs-exam-practice',version:1,exportedAt:new Date().toISOString(),profile:S.P},null,1);
+  try{
+    const blob=new Blob([txt],{type:'application/json'});const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download='ncs_'+S.P.name+'_'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  }catch(e){}
+  const box=$('#expbox');if(box){box.style.display='block';box.value=txt;}
+  setMsg('내보내기를 실행했습니다. 파일이 저장되지 않으면 아래 텍스트를 복사해 보관하세요.','okm');
+}
+function mergeImport(obj){
+  const p=obj&&(obj.profile||obj);
+  if(!p||typeof p!=='object'||(!p.wrong&&!p.history))throw new Error('형식이 올바르지 않습니다');
+  let w=0,hh=0;
+  Object.keys(p.wrong||{}).forEach(id=>{
+    const e=p.wrong[id];if(!e||typeof e!=='object')return;const c=S.P.wrong[id];
+    if(!c||String(e.date)>String(c.date)){S.P.wrong[id]={id:id,answer:String(e.answer||''),date:String(e.date||today()),keywords:Array.isArray(e.keywords)?e.keywords.map(String):[],done:Array.isArray(e.done)?e.done.map(Number):[]};w++;}
+  });
+  const have=new Set(S.P.history.map(h=>h.date+'|'+h.score));
+  (p.history||[]).forEach(h=>{if(h&&h.date&&!have.has(h.date+'|'+h.score)){S.P.history.push(h);hh++;}});
+  S.P.history.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  save();return{w:w,hh:hh};
+}
+function doImport(text){
+  try{const r=mergeImport(JSON.parse(text));render();setMsg('가져오기 완료: 오답 '+r.w+'개, 기록 '+r.hh+'개를 합쳤습니다.','okm');}
+  catch(e){setMsg('가져오기 실패: '+(e.message||e));}
+}
+function readFile(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result));r.onerror=()=>rej(r.error);r.readAsText(f,'UTF-8');});}
+
+/* ================= 동작 ================= */
+const A={};
+A.login=()=>{
+  const name=($('#nm').value||'').trim(),pin=($('#pin').value||'').trim();
+  if(!name)return setMsg('이름을 입력하세요.');
+  if(!/^\d{4}$/.test(pin))return setMsg('PIN은 숫자 4자리로 입력하세요.');
+  S.key='ncsq1:'+encodeURIComponent(name)+':'+pin;S.P=loadProfile(S.key,name);save();
+  S.set=null;S.nextNo=1;S.seen=new Set();
+  S.screen=allQuestions().length?'settings':'bank';render();
+};
+A.fillname=t=>{$('#nm').value=t.dataset.n;$('#pin').focus();};
+A.logout=()=>{S.P=null;S.set=null;S.screen='login';render();};
+A.go=t=>{S.screen=t.dataset.s;render();};
+A.modall=()=>{const b=[...document.querySelectorAll('input[data-mod]')];const all=b.every(x=>x.checked);b.forEach(x=>x.checked=!all);};
+A.setn=t=>{$('#n').value=t.dataset.n;};
+A.start=()=>{const er=collectSettings();if(er)return setMsg(er);const r=makeSet();if(r.err)return setMsg(r.err);startSet(r.qs,r.notice);};
+A.nextset=()=>{const r=makeSet();if(r.err)return setMsg(r.err);startSet(r.qs,r.notice);};
+A.pick=t=>{
+  const it=cur();if(lockedNow(it))return;it.answer=t.dataset.v;it.unknown=false;
+  document.querySelectorAll('.choice[data-act="pick"]').forEach(b=>b.classList.toggle('sel',b.dataset.v===it.answer));
+  const u=$('#unk');if(u)u.remove();updateChips();
+};
+A.unknown=()=>{const it=cur();if(lockedNow(it))return;it.unknown=true;it.answer=it.q.type===TYPES[2]?it.q.leftItems.map(()=>''):'';render(true);};
+A.prev=()=>{if(S.set.idx>0){S.set.idx--;render();}};
+A.next=()=>{if(S.set.idx<S.set.items.length-1){S.set.idx++;render();}};
+A.goq=t=>{S.set.idx=+t.dataset.i;render();};
+A.check=()=>{const it=cur();if(!isAnswered(it))return setMsg('답을 선택/입력하거나 "모름"을 누르세요.');it.checked=true;processResult(it,S.set);render(true);};
+A.submit=()=>{
+  const set=S.set;const un=set.items.filter(x=>!isAnswered(x)).map(x=>x.no);
+  if(un.length)return setMsg('아직 답하지 않은 문제가 있습니다: '+un.join(', ')+'번. 모르는 문제는 "모름"을 눌러 주세요.');
+  set.items.forEach(x=>{x.checked=true;processResult(x,set);});
+  set.submitted=true;
+  const t=totals(set);const by={};Object.keys(t.by).forEach(k=>by[k]={e:round2(t.by[k].e),m:t.by[k].m});
+  set.hist={date:new Date().toISOString(),from:set.items[0].no,to:set.items[set.items.length-1].no,count:set.items.length,score:t.e,max:t.m,by:by};
+  S.P.history.push(set.hist);if(S.P.history.length>300)S.P.history.shift();save();
+  S.report={detail:false,onlyWrong:false};S.screen='report';render();
+};
+A.rdetail=()=>{S.report.detail=!S.report.detail;render(true);};
+A.rwrong=()=>{S.report.onlyWrong=!S.report.onlyWrong;render(true);};
+function afterGradeChange(it){processResult(it,S.set);refreshHist();updateTop();updateCard(it);}
+A.override=t=>{const it=S.set.items.find(x=>x.no===+t.dataset.no);if(!it)return;it.override=true;afterGradeChange(it);};
+A.redo=t=>{
+  const dueOnly=t.dataset.due==='1',W=S.P.wrong;
+  let list=Object.keys(W).map(id=>({w:W[id],q:byId(id)})).filter(x=>x.q);
+  if(dueOnly)list=list.filter(x=>dueSteps(x.w).length);
+  if(!list.length)return setMsg('풀 수 있는 오답 문제가 없습니다. 문제은행을 불러왔는지 확인하세요.');
+  const due=shuffle(list.filter(x=>dueSteps(x.w).length)),rest=shuffle(list.filter(x=>!dueSteps(x.w).length));
+  startSet(due.concat(rest).map(x=>x.q),'오답 문제 '+list.length+'개로 구성했습니다.');
+};
+A.delwrong=t=>{if(confirm('이 오답을 노트에서 삭제할까요?')){delete S.P.wrong[t.dataset.id];save();render(true);}};
+A.export=exportJSON;
+A.importtext=()=>{const v=($('#imptxt').value||'').trim();if(!v)return setMsg('가져올 JSON 텍스트를 붙여넣으세요.');doImport(v);};
+A.sample=()=>{addParsed(SAMPLE_NAME,SAMPLE,true);S.bank.lastMsg='';S.screen='settings';render();};
+A.addtext=()=>{
+  const txt=$('#ptxt').value;if(!txt.trim())return setMsg('붙여넣은 텍스트가 없습니다.');
+  const nm=($('#pname').value||'').trim()||('붙여넣기-'+(++S.bank.pasteN)+'.txt');
+  const r=addParsed(nm,txt,false);S.bank.touched=true;
+  S.bank.lastMsg='"'+nm+'": 시작 표시 '+r.markers+'개 중 문제 '+r.questions.length+'개를 불러왔습니다(읽지 못한 문제 '+r.errors.length+'개).';render();
+};
+A.retryauto=async()=>{S.bank.loading=true;render(true);await autoLoad();render(true);};
+A.clearbank=()=>{if(confirm('불러온 문제은행을 모두 지울까요?')){S.bank.files=[];S.bank.fails=[];S.bank.lastMsg='';render(true);}};
+A.selftest=runSelfTest;
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t||t.disabled)return;const f=A[t.dataset.act];if(f)f(t,e);});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset&&t.dataset.in==='text'&&S.set&&S.screen==='solve'){
+    const it=cur();if(lockedNow(it))return;it.answer=t.value;
+    if(it.unknown){it.unknown=false;const u=$('#unk');if(u)u.remove();}
+    updateChips();
+  }
+});
+document.addEventListener('change',async e=>{
+  const t=e.target;
+  if(t.dataset&&t.dataset.in==='match'&&S.set){const it=cur();if(lockedNow(it))return;it.answer[+t.dataset.i]=t.value;it.unknown=false;const u=$('#unk');if(u)u.remove();updateChips();}
+  else if(t.dataset&&t.dataset.in==='rub'&&S.set){const it=S.set.items.find(x=>x.no===+t.dataset.no);if(!it)return;it.rub[+t.dataset.i]=t.checked;it.selfGraded=true;afterGradeChange(it);}
+  else if(t.id==='fl'&&t.files&&t.files.length){
+    let ok=0,bad=[],warn=false,mk=0,rd=0;
+    for(const f of t.files){try{const txt=await readFile(f);if(txt.indexOf('\uFFFD')>=0)warn=true;const r=addParsed(f.name,txt,false);mk+=r.markers;rd+=r.questions.length;ok++;}catch(er){bad.push(f.name);}}
+    S.bank.touched=true;
+    S.bank.lastMsg=ok+'개 파일을 불러왔습니다 (시작 표시 '+mk+'개 중 문제 '+rd+'개).'+(bad.length?' 실패: '+bad.join(', '):'')+(warn?' (글자가 깨졌다면 파일을 UTF-8로 저장해 다시 올려 주세요.)':'');
+    render();
+  }
+  else if(t.id==='imp'&&t.files&&t.files[0]){try{doImport(await readFile(t.files[0]));}catch(er){setMsg('파일을 읽지 못했습니다.');}}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&S.screen==='login'&&(e.target.id==='pin'||e.target.id==='nm'))A.login();});
+
+/* ================= 시작 ================= */
+render();
+autoLoad().then(()=>{
+  if(S.screen==='login'||S.screen==='bank'){
+    if(S.P&&S.screen==='bank'&&S.bank.auto&&allQuestions().length&&!S.bank.touched)S.screen='settings';
+    render(true);
+  }
+});
+})();
+</script>
+</body>
+</html>
