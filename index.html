@@ -82,8 +82,10 @@ label.fld{display:block;font-weight:600;margin:10px 0 4px}
 const TYPES=['4지택일형','진위형','연결형','단답형','서술형(약술)','서술형(계산)'];
 const TYPE_CODES={MC:TYPES[0],OX:TYPES[1],MT:TYPES[2],SA:TYPES[3],ES:TYPES[4],CA:TYPES[5]};
 const DEFAULT_POINTS={'4지택일형':2,'진위형':2,'연결형':2,'단답형':2,'서술형(약술)':4,'서술형(계산)':4};
-const ROUND_ORDER=['1차','2차','차수 미확인'];
-const ROUND_LABEL={'1차':'1차 (기초)','2차':'2차 (보충)','차수 미확인':'차수 미확인'};
+const UNKNOWN_ROUND='차수 미확인';
+const ROUND_NAME={'1차':'1차 (기초)','2차':'2차 (보충)','3차':'3차 (추가)'};
+function roundLabel(r){return ROUND_NAME[r]||r;}
+function roundNum(r){const m=/^(\d)차$/.exec(r);return m?+m[1]:99;}
 const DIFF_ORDER=['하','중','상'];
 const CIRC='①②③④';
 const NONE='정보 없음';
@@ -220,7 +222,7 @@ function save(){if(S.P)sset(S.key,JSON.stringify(S.P));}
 function allQuestions(){return S.bank.files.reduce((a,f)=>a.concat(f.questions),[]);}
 function byId(id){return allQuestions().find(q=>q.id===id)||null;}
 
-/* ================= 파서 (재작성) ================= */
+/* ================= 파서 ================= */
 /* 1) 전처리: BOM, 인용 번호, 굵게, 전각 콜론, 줄바꿈 → 공백 한 칸 */
 function preprocess(text){
   return String(text==null?'':text)
@@ -259,7 +261,7 @@ function sliceStrict(body){
   LABEL_RE.forEach(L=>{const r=findLabel(body,L.src,cur);if(r){found.push({name:L.name,start:r.start,vs:r.vs});cur=r.vs;}});
   return found;
 }
-/* 완화 규칙: 엄격 규칙으로 필수 항목을 못 찾았을 때만 사용 (모듈~문제는 순서대로, 이후 라벨은 문제 뒤에서 각각 처음 나오는 것) */
+/* 완화 규칙: 엄격 규칙으로 필수 항목을 못 찾았을 때만 사용 */
 function sliceRelaxed(body){
   const found=[];let cur=0;
   const qi=LABEL_RE.findIndex(l=>l.name==='문제');
@@ -389,8 +391,9 @@ function parseBank(text,fileName){
   const starts=[];let m;
   while((m=re.exec(t))){starts.push({idx:m.index,end:m.index+m[0].length,raw:(m[1]||m[2]||'').trim()});if(m[0].length===0)re.lastIndex++;}
   const header=starts.length?t.slice(0,starts[0].idx):t;
-  let round;const hm=header.match(/차수\s*:\s*([12])\s*차/);
-  if(hm)round=hm[1]+'차';else{const fm=String(fileName||'').match(/([12])\s*차/);round=fm?fm[1]+'차':'차수 미확인';}
+  /* 차수: 문서 첫머리의 "차수: N차" 줄 → 없으면 파일 이름의 "N차" → 없으면 차수 미확인 */
+  let round;const hm=header.match(/차수\s*:\s*(\d)\s*차/);
+  if(hm)round=hm[1]+'차';else{const fm=String(fileName||'').match(/(\d)\s*차/);round=fm?fm[1]+'차':UNKNOWN_ROUND;}
   const questions=[],errors=[],relaxed=[];
   starts.forEach((s,i)=>{
     let body=t.slice(s.end,i+1<starts.length?starts[i+1].idx:t.length);
@@ -403,17 +406,20 @@ function parseBank(text,fileName){
   });
   return{round:round,questions:questions,errors:errors,markers:starts.length,relaxed:relaxed};
 }
+/* 파일 추가: 같은 id가 다른 차수에 이미 있으면 "id@차수"로 구분해 둘 다 살림. 같은 차수의 중복 id만 실패 처리 */
 function addParsed(name,text,isSample){
   const r=parseBank(text,name);
   if(!isSample)S.bank.files=S.bank.files.filter(f=>!f.sample);
   S.bank.files=S.bank.files.filter(f=>f.name!==name);
-  const ids=new Set();S.bank.files.forEach(f=>f.questions.forEach(q=>ids.add(q.id)));
-  const qs=[];
+  const owner=new Map();S.bank.files.forEach(f=>f.questions.forEach(q=>owner.set(q.id,q)));
+  const qs=[],renamed=[];
   r.questions.forEach(q=>{
-    if(ids.has(q.id))r.errors.push({id:q.id,reason:'중복 id (이미 불러온 다른 블록과 같은 id)',snippet:q.snip||''});
-    else{ids.add(q.id);q.file=name;qs.push(q);}
+    let id=q.id;
+    if(owner.has(id)&&owner.get(id).round!==q.round){id=q.id+'@'+q.round;if(!owner.has(id))renamed.push(q.id+' → '+id);}
+    if(owner.has(id))r.errors.push({id:q.id,reason:'중복 id (같은 차수의 다른 블록과 id가 같음)',snippet:q.snip||''});
+    else{q.id=id;q.file=name;owner.set(id,q);qs.push(q);}
   });
-  r.questions=qs;r.name=name;r.sample=!!isSample;S.bank.files.push(r);return r;
+  r.questions=qs;r.renamed=renamed;r.name=name;r.sample=!!isSample;S.bank.files.push(r);return r;
 }
 async function autoLoad(){
   S.bank.loading=true;S.bank.autoMsg='';S.bank.fails=[];
@@ -482,7 +488,8 @@ function runSelfTest(){
 function present(){
   const qs=allQuestions();
   const diffs=uniq(qs.map(q=>q.difficulty)).sort((a,b)=>{const x=DIFF_ORDER.indexOf(a),y=DIFF_ORDER.indexOf(b);return (x<0?9:x)-(y<0?9:y);});
-  return{mods:uniq(qs.map(q=>q.module)),rounds:ROUND_ORDER.filter(r=>qs.some(q=>q.round===r)),diffs:diffs,types:TYPES.filter(t=>qs.some(q=>q.type===t))};
+  const rounds=uniq(qs.map(q=>q.round)).sort((a,b)=>roundNum(a)-roundNum(b));
+  return{mods:uniq(qs.map(q=>q.module)),rounds:rounds,diffs:diffs,types:TYPES.filter(t=>qs.some(q=>q.type===t))};
 }
 function eff(){
   const s=S.P.settings,p=present();
@@ -646,12 +653,13 @@ function vParse(){
     const byT={},byD={};
     f.questions.forEach(q=>{byT[q.type]=(byT[q.type]||0)+1;byD[q.difficulty]=(byD[q.difficulty]||0)+1;});
     h+='<div class="pf"><b>'+esc(f.name)+'</b>'+(f.sample?' <small>(내장 샘플)</small>':'')
-      +'<div>차수: '+esc(f.round)+'</div>'
+      +'<div>차수: '+esc(roundLabel(f.round))+'</div>'
       +'<div>시작 표시 '+f.markers+'개 · 읽은 문제 <b>'+f.questions.length+'</b>개 · 읽지 못한 문제 <b>'+f.errors.length+'</b>개</div>'
       +'<div>유형별: '+(TYPES.filter(t=>byT[t]).map(t=>esc(t)+' '+byT[t]).join(', ')||'-')+'</div>'
       +'<div>난이도별: '+(Object.keys(byD).map(d=>esc(d)+' '+byD[d]).join(', ')||'-')+'</div>'
       +(f.markers===0?'<ul class="errs"><li>시작 표시("=== Q …===" 또는 "MC 001 ===")를 찾지 못했습니다. 파일 내용을 확인하세요.</li></ul>':'')
       +(f.relaxed&&f.relaxed.length?'<div class="mut"><small>라벨 순서가 달라 완화 규칙으로 읽은 블록: '+esc(f.relaxed.join(', '))+'</small></div>':'')
+      +(f.renamed&&f.renamed.length?'<div class="mut"><small>다른 차수와 id가 겹쳐 차수를 붙인 문제: '+esc(f.renamed.join(', '))+'</small></div>':'')
       +(f.errors.length?'<ul class="errs">'+f.errors.map(e=>'<li><b>'+esc(e.id)+'</b>: '+esc(e.reason)+(e.snippet?'<div class="snip">'+esc(e.snippet)+'</div>':'')+'</li>').join('')+'</ul>':'')+'</div>';
   });
   S.bank.fails.forEach(x=>{h+='<div class="pf"><b>'+esc(x.name)+'</b><ul class="errs"><li>파일을 불러오지 못함: '+esc(x.reason)+'</li></ul></div>';});
@@ -667,7 +675,7 @@ function vBank(){
   if(cnt)h+='<button class="btn pri block" data-act="go" data-s="settings">설정으로 이동 ('+cnt+'문제)</button>';
   h+=vParse();
   h+='<section class="card"><h3>수동 불러오기</h3><label class="fld" for="fl">.txt 파일 (여러 개 선택 가능, UTF-8)</label><input id="fl" type="file" multiple accept=".txt,text/plain">'
-   +'<label class="fld" for="pname">붙여넣기 파일 이름 (선택, 예: 문서작성_M01_1차.txt)</label><input id="pname" type="text" placeholder="이름에 M01·1차/2차가 있으면 id·차수 판단에 사용">'
+   +'<label class="fld" for="pname">붙여넣기 파일 이름 (선택, 예: M01_문서작성_3차.txt)</label><input id="pname" type="text" placeholder="이름에 M01·N차가 있으면 id·차수 판단에 사용">'
    +'<label class="fld" for="ptxt">문제은행 텍스트 붙여넣기</label><textarea id="ptxt" rows="6" placeholder="문제 블록이 포함된 텍스트"></textarea>'
    +'<button class="btn block" style="margin-top:10px" data-act="addtext">붙여넣은 텍스트 불러오기</button></section>';
   h+='<section class="card"><h3>기타</h3>'
@@ -702,9 +710,12 @@ function vSettings(){
     p.mods.forEach((m,i)=>{h+='<label class="ck"><input type="checkbox" data-mod value="'+i+'"'+(e.mods.includes(m)?' checked':'')+'><span>'+esc(m)+' <small>('+qs.filter(q=>q.module===m).length+'문제)</small></span></label>';});
   }
   h+='<h3>2. 차수</h3>';
-  if(p.rounds.length===1)h+='<div class="auto">불러온 문제의 차수가 1개뿐이라 자동 선택되었습니다: <b>'+esc(ROUND_LABEL[p.rounds[0]])+'</b></div>';
+  if(p.rounds.length===1)h+='<div class="auto">불러온 문제의 차수가 1개뿐이라 자동 선택되었습니다: <b>'+esc(roundLabel(p.rounds[0]))+'</b></div>';
   else{
-    p.rounds.concat(['ALL']).forEach(r=>{h+='<label class="ck"><input type="radio" name="round" value="'+r+'"'+(e.round===r?' checked':'')+'><span>'+(r==='ALL'?'전체':esc(ROUND_LABEL[r]))+'</span></label>';});
+    p.rounds.concat(['ALL']).forEach(r=>{
+      const n=r==='ALL'?qs.length:qs.filter(q=>q.round===r).length;
+      h+='<label class="ck"><input type="radio" name="round" value="'+esc(r)+'"'+(e.round===r?' checked':'')+'><span>'+(r==='ALL'?'전체':esc(roundLabel(r)))+' <small>('+n+'문제)</small></span></label>';
+    });
   }
   h+='<h3>3. 한 번에 풀 문제 수</h3><div class="nrow"><input id="n" type="number" inputmode="numeric" min="1" max="200" value="'+e.n+'">'
     +[5,10,15].map(n=>'<button class="btn sm" data-act="setn" data-n="'+n+'">'+n+'</button>').join('')+'</div></section>';
